@@ -1,0 +1,16 @@
+# IntelliJ and JetBrains
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Build output
+out/
+target/
+
+# System junk
+Thumbs.db
+.DS_Store
+AppData/
+JetBrains/
+Downloads/
