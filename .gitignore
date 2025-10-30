@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -36,3 +37,21 @@ build/
 
 ### Mac OS ###
 .DS_Store
+=======
+# IntelliJ and JetBrains
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Build output
+out/
+target/
+
+# System junk
+Thumbs.db
+.DS_Store
+AppData/
+JetBrains/
+Downloads/
+>>>>>>> 9242fb26cfdce6e15c773ebb8a505d7dde8769da

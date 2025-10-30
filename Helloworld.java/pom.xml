@@ -1,0 +1,7 @@
+public class HelloWorld {
+  static void greeting() {
+    System.out.printIn("Hello World");
+
+printldn
+}
+
