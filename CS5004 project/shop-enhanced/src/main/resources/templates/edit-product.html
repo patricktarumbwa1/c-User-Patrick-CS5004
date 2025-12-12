@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Product - ShopHub</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+  <div class="navbar-container">
+    <a href="/" class="navbar-brand">
+      🛍️ ShopHub
+    </a>
+    <ul class="navbar-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/products">Products</a></li>
+      <li><a href="/products/new">Add Product</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Main Container -->
+<div class="container">
+
+  <!-- Form Container -->
+  <div class="form-container">
+    <h2 style="margin-bottom: 2rem; color: var(--dark-text); text-align: center;">
+      ✏️ Edit Product
+    </h2>
+
+    <!-- 
+      Edit Form:
+      - We need to send the ID so the controller knows which product to update
+      - ID is in a hidden field (user can't see or change it)
+      - All other fields are pre-filled with current values using th:value
+    -->
+    <form action="/products/update" method="post">
+
+      <!-- Hidden ID Field - Required to know which product to update -->
+      <input type="hidden" name="id" th:value="${product.id}" />
+
+      <!-- Display ID (read-only, just for information) -->
+      <div class="form-group">
+        <label>Product ID</label>
+        <input type="text" 
+               th:value="${product.id}" 
+               disabled 
+               style="background: var(--light-bg); cursor: not-allowed;" />
+        <small style="color: var(--secondary-color);">
+          ID cannot be changed (automatically assigned)
+        </small>
+      </div>
+
+      <!-- Product Name -->
+      <div class="form-group">
+        <label for="name">Product Name *</label>
+        <!-- th:value="${product.name}" pre-fills the current name -->
+        <input type="text" 
+               id="name" 
+               name="name" 
+               th:value="${product.name}" 
+               required 
+               placeholder="Enter product name"
+               maxlength="100" />
+      </div>
+
+      <!-- Price -->
+      <div class="form-group">
+        <label for="price">Price ($) *</label>
+        <!-- th:value="${product.price}" pre-fills the current price -->
+        <input type="number" 
+               id="price" 
+               name="price" 
+               step="0.01" 
+               th:value="${product.price}" 
+               required 
+               placeholder="0.00" 
+               min="0" />
+      </div>
+
+      <!-- Category -->
+      <div class="form-group">
+        <label for="category">Category *</label>
+        <select id="category" name="category" required>
+          <!-- 
+            Loop through all categories
+            th:selected="${c == product.category}" marks the current category as selected
+          -->
+          <option th:each="c : ${categories}"
+                  th:value="${c}"
+                  th:text="${c}"
+                  th:selected="${c == product.category}">
+          </option>
+        </select>
+      </div>
+
+      <!-- FEATURE D: Description -->
+      <div class="form-group">
+        <label for="description">Description *</label>
+        <!-- th:text="${product.description}" pre-fills the current description -->
+        <textarea id="description" 
+                  name="description" 
+                  rows="4" 
+                  required
+                  maxlength="500"
+                  placeholder="Describe your product..."
+                  style="resize: vertical; font-family: inherit;"
+                  th:text="${product.description}">
+        </textarea>
+        <small style="color: var(--secondary-color);">
+          Update the product description (max 500 characters)
+        </small>
+      </div>
+
+      <!-- FEATURE E: Stock -->
+      <div class="form-group">
+        <label for="stock">Stock Quantity *</label>
+        <!-- th:value="${product.stock}" pre-fills the current stock -->
+        <input type="number" 
+               id="stock" 
+               name="stock" 
+               th:value="${product.stock}" 
+               required 
+               placeholder="0" 
+               min="0" />
+        <small style="color: var(--secondary-color);">
+          Update available quantity (0 = out of stock)
+        </small>
+      </div>
+
+      <!-- Form Action Buttons -->
+      <div class="form-actions">
+        <button type="submit" class="btn btn-success">
+          💾 Save Changes
+        </button>
+        <a href="/products" class="btn btn-secondary">
+          ❌ Cancel
+        </a>
+      </div>
+
+    </form>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <p>© 2024 ShopHub. Built with Spring Boot & Thymeleaf</p>
+  </div>
+</footer>
+
+</body>
+</html>

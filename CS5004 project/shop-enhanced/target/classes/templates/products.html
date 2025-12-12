@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products - ShopHub</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+  <div class="navbar-container">
+    <a href="/" class="navbar-brand">
+      🛍️ ShopHub
+    </a>
+    <ul class="navbar-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/products">Products</a></li>
+      <li><a href="/products/new">Add Product</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Main Container -->
+<div class="container">
+
+  <!-- Page Header with Search & Filter -->
+  <div class="card">
+    <div class="card-header">
+      <h1 class="card-title">📦 Our Products</h1>
+      <a href="/products/new" class="btn btn-success">➕ Add New Product</a>
+    </div>
+
+    <!-- FEATURE C: Search and Filter Section -->
+    <div style="padding: 1.5rem; background: var(--light-bg); border-radius: 0.5rem; margin-bottom: 2rem;">
+      <form action="/products" method="get" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+        
+        <!-- Search by Name -->
+        <div style="flex: 1; min-width: 200px;">
+          <label for="search" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">
+            🔍 Search Products
+          </label>
+          <input type="text" 
+                 id="search" 
+                 name="search" 
+                 th:value="${currentSearch}"
+                 placeholder="Search by name..."
+                 style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 0.5rem;">
+        </div>
+
+        <!-- Filter by Category -->
+        <div style="flex: 1; min-width: 200px;">
+          <label for="category" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">
+            🏷️ Filter by Category
+          </label>
+          <select id="category" 
+                  name="category"
+                  style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 0.5rem;">
+            <option value="">All Categories</option>
+            <option th:each="cat : ${categories}"
+                    th:value="${cat}"
+                    th:text="${cat}"
+                    th:selected="${cat == currentCategory}">
+            </option>
+          </select>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="submit" class="btn btn-primary">Apply</button>
+          <a href="/products" class="btn btn-secondary">Clear</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Products Count -->
+    <div style="margin-bottom: 1rem; color: var(--secondary-color); font-weight: 500;">
+      Showing <strong th:text="${#lists.size(products)}">0</strong> product(s)
+    </div>
+
+    <!-- Products Grid -->
+    <div class="product-grid" th:if="${#lists.size(products) > 0}">
+      <div class="product-card" th:each="product : ${products}">
+        
+        <!-- Product Image/Icon -->
+        <div class="product-image" 
+             th:with="icon=${product.category == T(com.example.shop.model.Category).CLOTHES ? '👕' : 
+                            product.category == T(com.example.shop.model.Category).ELECTRONICS ? '💻' : 
+                            product.category == T(com.example.shop.model.Category).FOOD ? '🍕' : 
+                            product.category == T(com.example.shop.model.Category).TOYS ? '🎮' : '📚'}"
+             th:text="${icon}">
+        </div>
+
+        <!-- Product Details -->
+        <div class="product-body">
+          
+          <!-- Category Badge -->
+          <span class="product-category" th:text="${product.category}">Category</span>
+          
+          <!-- Product Name -->
+          <h3 class="product-name" th:text="${product.name}">Product Name</h3>
+          
+          <!-- FEATURE D: Product Description -->
+          <p style="color: var(--secondary-color); margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.5;"
+             th:text="${product.description}">
+            Product description goes here
+          </p>
+          
+          <!-- Price -->
+          <div class="product-price" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">$0.00</div>
+          
+          <!-- FEATURE E: Stock Status Badge -->
+          <div style="margin: 1rem 0;">
+            <!-- Out of Stock (Red) -->
+            <span th:if="${product.stock == 0}" 
+                  class="badge badge-danger"
+                  style="background: var(--danger-color);">
+              ❌ Out of Stock
+            </span>
+            
+            <!-- Low Stock (Orange/Warning) -->
+            <span th:if="${product.stock > 0 && product.stock < 5}" 
+                  class="badge badge-warning"
+                  style="background: var(--warning-color);">
+              ⚠️ Low Stock (<span th:text="${product.stock}">0</span> left)
+            </span>
+            
+            <!-- In Stock (Green) -->
+            <span th:if="${product.stock >= 5}" 
+                  class="badge badge-success">
+              ✅ In Stock (<span th:text="${product.stock}">0</span> available)
+            </span>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="product-actions">
+            <a th:href="@{'/products/edit/' + ${product.id}}" 
+               class="btn btn-primary btn-small">
+              ✏️ Edit
+            </a>
+            <a th:href="@{'/products/delete/' + ${product.id}}" 
+               class="btn btn-danger btn-small"
+               onclick="return confirm('Are you sure you want to delete this product?');">
+              🗑️ Delete
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State (No Products Found) -->
+    <div class="empty-state" th:if="${#lists.isEmpty(products)}">
+      <div class="empty-state-icon">🔍</div>
+      <h2 class="empty-state-title">No Products Found</h2>
+      <p class="empty-state-text">
+        <span th:if="${currentSearch != null || currentCategory != null}">
+          Try adjusting your search or filter criteria.
+        </span>
+        <span th:if="${currentSearch == null && currentCategory == null}">
+          Start by adding your first product to the shop!
+        </span>
+      </p>
+      <a href="/products" class="btn btn-secondary" th:if="${currentSearch != null || currentCategory != null}">
+        Clear Filters
+      </a>
+      <a href="/products/new" class="btn btn-primary" th:if="${currentSearch == null && currentCategory == null}">
+        Add Your First Product
+      </a>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <p>© 2024 ShopHub. Built with Spring Boot & Thymeleaf</p>
+  </div>
+</footer>
+
+</body>
+</html>

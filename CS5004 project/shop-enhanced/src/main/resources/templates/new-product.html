@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Product - ShopHub</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+  <div class="navbar-container">
+    <a href="/" class="navbar-brand">
+      🛍️ ShopHub
+    </a>
+    <ul class="navbar-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/products">Products</a></li>
+      <li><a href="/products/new">Add Product</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Main Container -->
+<div class="container">
+
+  <!-- Form Container -->
+  <div class="form-container">
+    <h2 style="margin-bottom: 2rem; color: var(--dark-text); text-align: center;">
+      ➕ Add New Product
+    </h2>
+
+    <!-- 
+      HTML Form Explanation:
+      - action="/products/create" → sends data to this URL when submitted
+      - method="post" → uses POST request (for creating/updating data)
+      - Each input needs a "name" attribute → this becomes the @RequestParam in controller
+    -->
+    <form action="/products/create" method="post">
+
+      <!-- REMOVED: Product ID field - now auto-generated! -->
+      
+      <!-- Product Name Input -->
+      <div class="form-group">
+        <label for="name">Product Name *</label>
+        <input type="text" 
+               id="name" 
+               name="name" 
+               required 
+               placeholder="e.g., Blue T-Shirt, Gaming Laptop"
+               maxlength="100" />
+        <small style="color: var(--secondary-color);">
+          Give your product a clear, descriptive name
+        </small>
+      </div>
+
+      <!-- Price Input -->
+      <div class="form-group">
+        <label for="price">Price ($) *</label>
+        <input type="number" 
+               id="price" 
+               name="price" 
+               step="0.01" 
+               required 
+               placeholder="0.00" 
+               min="0" />
+        <small style="color: var(--secondary-color);">
+          Enter price in dollars (e.g., 19.99)
+        </small>
+      </div>
+
+      <!-- Category Dropdown -->
+      <div class="form-group">
+        <label for="category">Category *</label>
+        <select id="category" name="category" required>
+          <option value="">-- Select a Category --</option>
+          <!-- 
+            th:each loops through all categories
+            th:value sets the option's value
+            th:text displays the category name
+          -->
+          <option th:each="c : ${categories}" 
+                  th:value="${c}" 
+                  th:text="${c}">
+          </option>
+        </select>
+        <small style="color: var(--secondary-color);">
+          Choose the category that best fits your product
+        </small>
+      </div>
+
+      <!-- FEATURE D: Product Description -->
+      <div class="form-group">
+        <label for="description">Description *</label>
+        <textarea id="description" 
+                  name="description" 
+                  rows="4" 
+                  required
+                  placeholder="Describe your product in detail..."
+                  maxlength="500"
+                  style="resize: vertical; font-family: inherit;">
+        </textarea>
+        <small style="color: var(--secondary-color);">
+          Provide a detailed description (max 500 characters)
+        </small>
+      </div>
+
+      <!-- FEATURE E: Stock/Inventory -->
+      <div class="form-group">
+        <label for="stock">Stock Quantity *</label>
+        <input type="number" 
+               id="stock" 
+               name="stock" 
+               required 
+               placeholder="0" 
+               min="0"
+               value="0" />
+        <small style="color: var(--secondary-color);">
+          How many items do you have available? (0 = out of stock)
+        </small>
+      </div>
+
+      <!-- Form Action Buttons -->
+      <div class="form-actions">
+        <button type="submit" class="btn btn-success">
+          ✅ Create Product
+        </button>
+        <a href="/products" class="btn btn-secondary">
+          ❌ Cancel
+        </a>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Info Box -->
+  <div style="max-width: 600px; margin: 2rem auto;">
+    <div class="alert alert-info">
+      <strong>💡 New Feature:</strong> Product IDs are now automatically generated! 
+      No need to worry about duplicate IDs anymore.
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <p>© 2024 ShopHub. Built with Spring Boot & Thymeleaf</p>
+  </div>
+</footer>
+
+</body>
+</html>
